@@ -14,3 +14,23 @@ log:
     enabled: true
     interval: daily
     maxAgeDays: 7
+
+db:
+  host: localhost
+  port: 3306
+  username: root
+  password: rewrite123
+  dbname: clover
+  charset: utf8mb4
+  debug: false
+  source: mysql
+
+db1:
+  host: localhost
+  port: 3306
+  username: root
+  password: rewrite123
+  dbname: clover
+  charset: utf8mb4
+  debug: false
+  source: mysql

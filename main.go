@@ -3,6 +3,7 @@ package main
 import (
 	"clover_server/core"
 	"clover_server/flags"
+	"clover_server/global"
 	"clover_server/logger"
 	"fmt"
 	"log/slog"
@@ -17,8 +18,9 @@ func main() {
 		fmt.Fprintf(os.Stderr, "读取配置失败: %v\n", err)
 		os.Exit(1)
 	}
+	global.Config = cnf
 
-	if err := logger.Init(cnf.ToLoggerConfig()); err != nil {
+	if err := logger.Init(core.ToLoggerConfig(cnf)); err != nil {
 		fmt.Fprintf(os.Stderr, "初始化日志失败: %v\n", err)
 		os.Exit(1)
 	}
@@ -35,4 +37,7 @@ func main() {
 		slog.String("log_level", cnf.Log.Level),
 		slog.String("log_format", cnf.Log.Format),
 	)
+	global.DB = core.InitDB()
+	slog.Info("数据库连接成功")
+
 }
