@@ -12,4 +12,5 @@ const Version = "10.0.1"
 var (
 	Config *conf.Config
 	DB     *gorm.DB
+	DB1 *gorm.DB
 )
