@@ -1,3 +1,16 @@
 system:
   ip: 0.0.0.0
   port: 8080
+  env: dev
+
+log:
+  level: debug
+  format: text
+  dir: logs
+  prefix: clover_server
+  console: true
+  file: true
+  rotate:
+    enabled: true
+    interval: daily
+    maxAgeDays: 7
