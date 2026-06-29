@@ -5,6 +5,7 @@ import (
 	"clover_server/flags"
 	"clover_server/global"
 	"clover_server/logger"
+
 	"fmt"
 	"log/slog"
 	"os"
@@ -39,5 +40,7 @@ func main() {
 	)
 	global.DB = core.InitDB()
 	slog.Info("数据库连接成功")
+	// 1. 初始化 IP 数据库
+	core.InitIPDB("112.45.173.110")
 
 }
