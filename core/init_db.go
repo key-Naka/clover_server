@@ -45,6 +45,6 @@ func InitDB() *gorm.DB {
 		sqlDB.SetMaxOpenConns(100)
 		sqlDB.SetConnMaxLifetime(10 * time.Second)
 	}
-
+	slog.Info("数据库连接成功")
 	return db
 }

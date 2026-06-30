@@ -27,17 +27,19 @@ func ToLoggerConfig(c *conf.Config) logger.Config {
 	}
 }
 
-// ReadConf 读取并解析 YAML 配置文件。
-func ReadConf(path string) (*conf.Config, error) {
+// InitConf 读取并解析 YAML 配置文件。
+func InitConf(path string) *conf.Config {
 	confData, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("读取配置文件失败: %w", err)
+		fmt.Fprintf(os.Stderr, "读取配置文件失败: %v\n", err)
+		os.Exit(1)
 	}
 
 	var cfg conf.Config
 	if err := yaml.Unmarshal(confData, &cfg); err != nil {
-		return nil, fmt.Errorf("解析yaml配置文件格式错误: %w", err)
+		fmt.Fprintf(os.Stderr, "解析yaml配置文件格式错误: %v\n", err)
+		os.Exit(1)
 	}
 
-	return &cfg, nil
+	return &cfg
 }

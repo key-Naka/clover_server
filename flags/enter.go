@@ -2,6 +2,7 @@ package flags
 
 import (
 	"flag"
+	"os"
 )
 
 type Options struct {
@@ -17,4 +18,12 @@ func ParseFlags() {
 	flag.BoolVar(&FlagsOptions.DB, "db", false, "数据库迁移")
 	flag.BoolVar(&FlagsOptions.Version, "version", false, "版本")
 	flag.Parse()
+}
+
+func Run() {
+	if FlagsOptions.DB {
+		FlagDB()
+		os.Exit(0)
+	}
+
 }

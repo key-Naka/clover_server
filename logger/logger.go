@@ -30,10 +30,11 @@ type RotateConfig struct {
 }
 
 // Init 初始化全局默认日志器。
-func Init(cfg Config) error {
+func Init(cfg Config) {
 	writer, closeFn, err := buildWriter(cfg)
 	if err != nil {
-		return fmt.Errorf("构建日志输出失败: %w", err)
+		fmt.Fprintf(os.Stderr, "初始化日志失败: %v\n", err)
+		os.Exit(1)
 	}
 
 	if closeFn != nil {
@@ -47,8 +48,6 @@ func Init(cfg Config) error {
 
 	logger := slog.New(newHandler(writer, cfg.Format, cfg.Env, handlerOptions))
 	slog.SetDefault(logger)
-
-	return nil
 }
 
 func newHandler(writer io.Writer, format string, env string, opts *slog.HandlerOptions) slog.Handler {
