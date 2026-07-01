@@ -23,6 +23,7 @@ func main() {
 	}()
 
 	global.DB = core.InitDB()
+	core.InitIPDB()
 
 	flags.Run()
 }

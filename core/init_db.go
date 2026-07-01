@@ -8,6 +8,7 @@ import (
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
 )
 
@@ -15,8 +16,17 @@ func InitDB() *gorm.DB {
 	dbconfig := global.Config.DB
 	dbconfig1 := global.Config.DB1
 
+	// 数据库日志配置
+	gormLogger := NewSlogGormLogger()
+	if dbconfig.Debug {
+		gormLogger = gormLogger.LogMode(logger.Info)
+	}
+
 	// 主库连接
-	db, err := gorm.Open(mysql.Open(dbconfig.DSN()), &gorm.Config{DisableForeignKeyConstraintWhenMigrating: true})
+	db, err := gorm.Open(mysql.Open(dbconfig.DSN()), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+		Logger:                                   gormLogger,
+	})
 	if err != nil {
 		slog.Error("数据库主库连接失败", slog.Any("err", err))
 		os.Exit(1)
