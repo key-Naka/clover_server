@@ -6,17 +6,17 @@ import (
 
 type LogModel struct {
 	Model
-	LogType     enum.LogType   `json:"logType"`
-	Title       string         `json:"title"`
-	Content     string         `json:"content"`
-	Level       int8           `json:"level"`
-	UserID      uint           `json:"-"`
-	UserModel   UserModel      `gorm:"foreignKey:UserID" json:"-"`
-	Ip          string         `json:"ip"`
-	Addr        string         `json:"addr"`
-	IsRead      bool           `json:"isRead"`
-	LoginStatus bool           `json:"loginStatus"`
-	Username    string         `gorm:"size:32"json:"username"`
-	Password    string         `gorm:"size:32"json:"password"`
-	LoginType   enum.LoginType `json:"loginType"`
+	LogType     enum.LogType      `json:"logType"`
+	Title       string            `json:"title"`
+	Content     string            `json:"content"`
+	Level       enum.LogLevelType `json:"level"`
+	UserID      uint              `json:"-"`
+	UserModel   UserModel         `gorm:"foreignKey:UserID" json:"-"`
+	Ip          string            `json:"ip"`
+	Addr        string            `json:"addr"`
+	IsRead      bool              `json:"isRead"`
+	LoginStatus bool              `json:"loginStatus"`
+	Username    string            `gorm:"size:32"json:"username"`
+	Password    string            `gorm:"size:32"json:"password"`
+	LoginType   enum.LoginType    `json:"loginType"`
 }

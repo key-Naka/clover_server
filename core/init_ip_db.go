@@ -57,6 +57,8 @@ func SearchAddr(ip string) string {
 	if country != "0" && country != "" {
 		return country
 	}
-
-	return "未知位置"
+	if city != "0" {
+		return city
+	}
+	return "未知地址"
 }

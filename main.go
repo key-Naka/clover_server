@@ -5,7 +5,7 @@ import (
 	"clover_server/flags"
 	"clover_server/global"
 	"clover_server/logger"
-
+	"clover_server/router"
 	"log/slog"
 )
 
@@ -26,4 +26,6 @@ func main() {
 	core.InitIPDB()
 
 	flags.Run()
+	router.Run()
+
 }
