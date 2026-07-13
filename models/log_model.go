@@ -10,7 +10,7 @@ type LogModel struct {
 	Title       string            `json:"title"`
 	Content     string            `json:"content"`
 	Level       enum.LogLevelType `json:"level"`
-	UserID      uint              `json:"-"`
+	UserID      uint              `json:"userId"`
 	UserModel   UserModel         `gorm:"foreignKey:UserID" json:"-"`
 	Ip          string            `json:"ip"`
 	Addr        string            `json:"addr"`

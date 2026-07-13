@@ -8,9 +8,11 @@ import (
 )
 
 func Run() {
+	gin.SetMode(global.Config.System.GinMode)
 	r := gin.Default()
 	nr := r.Group("/api")
 	nr.Use(middleware.LogMiddleware)
 	SiteRouter(nr)
+	LogRouter(nr)
 	r.Run(global.Config.System.GetAddr())
 }

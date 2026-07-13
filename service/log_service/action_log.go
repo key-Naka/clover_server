@@ -31,6 +31,7 @@ type ActionLog struct {
 	itemList           []string
 	responseHeader     http.Header
 	isMiddleware       bool
+	serviceName        string
 }
 
 func (ac *ActionLog) ShowRequest() {

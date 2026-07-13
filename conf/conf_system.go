@@ -5,9 +5,10 @@ import "fmt"
 
 // System 定义系统运行配置。
 type System struct {
-	IP   string `yaml:"ip"`
-	Port int    `yaml:"port"`
-	Env  string `yaml:"env"`
+	IP      string `yaml:"ip"`
+	Port    int    `yaml:"port"`
+	Env     string `yaml:"env"`
+	GinMode string `yaml:"gin_mode"`
 }
 
 func (s *System) GetAddr() string {

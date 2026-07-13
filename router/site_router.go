@@ -7,8 +7,8 @@ import (
 )
 
 func SiteRouter(r *gin.RouterGroup) {
-	App := api.App
+	App := api.App.SiteApi
 
-	r.GET("/site", App.SiteApi.SiteinfoView)
-	r.POST("/site", App.SiteApi.SiteUpdateView)
+	r.GET("/site", App.SiteinfoView)
+	r.POST("/site", App.SiteUpdateView)
 }
