@@ -14,7 +14,14 @@ log:
     enabled: true
     interval: daily
     maxAgeDays: 7
-
+jwt:
+  expire: 240
+  secret: 0721
+  issuer: naka
+redis:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 1
 db:
   host: localhost
   port: 3306

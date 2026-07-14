@@ -6,6 +6,7 @@ import (
 	"clover_server/global"
 	"clover_server/models"
 	"clover_server/models/enum"
+	"clover_server/utils/jwts"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -182,21 +183,24 @@ func (ac *ActionLog) Save() (id uint) {
 
 	ip := ac.c.ClientIP()
 	addr := core.SearchAddr(ip)
-
-	// 注意：由于当前 clover_server 项目中尚未引入 JWT 的上下文解析，
-	// 所以此处暂用默认的 uint(1) 作为 UserID，后续你可以集成真正的用户身份获取逻辑。
-	userID := uint(1)
-
-	log := models.LogModel{
-		LogType: enum.ActionLogType,
-		Title:   ac.title,
-		Content: content,
-		Level:   ac.level,
-		UserID:  userID,
-		Ip:      ip,
-		Addr:    addr,
+	clamis, err := jwts.ParseTokenByGin(ac.c)
+	var userID uint
+	var username string
+	if err == nil {
+		userID = clamis.UserID
+		username = clamis.Username
 	}
-	err := global.DB.Create(&log).Error
+	log := models.LogModel{
+		LogType:  enum.ActionLogType,
+		Title:    ac.title,
+		Content:  content,
+		Level:    ac.level,
+		UserID:   userID,
+		Username: username,
+		Ip:       ip,
+		Addr:     addr,
+	}
+	err = global.DB.Create(&log).Error
 	if err != nil {
 		slog.Warn("日志创建错误", "err", err)
 		return 0
