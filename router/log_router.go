@@ -2,6 +2,7 @@ package router
 
 import (
 	"clover_server/api"
+	"clover_server/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,7 +10,7 @@ import (
 func LogRouter(r *gin.RouterGroup) {
 	App := api.App.LogApi
 
-	r.GET("logs", App.GetLogList)
-	r.GET("logs/:id", App.LogReadView)
-	r.DELETE("logs", App.LogRemoveView)
+	r.GET("logs", middleware.AuthMiddleware, App.GetLogList)
+	r.GET("logs/:id", middleware.AuthMiddleware, App.LogReadView)
+	r.DELETE("logs", middleware.AdminAuthMiddleware, App.LogRemoveView)
 }
