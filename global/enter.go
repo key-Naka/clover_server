@@ -12,6 +12,7 @@ const Version = "10.0.1"
 
 var (
 	Config *conf.Config
+	Qiniu  *conf.QiNiu
 	Redis  *redis.Client
 	DB     *gorm.DB
 	DB1    *gorm.DB

@@ -25,8 +25,7 @@ func main() {
 	global.DB = core.InitDB()
 	global.Redis = core.InitRedis()
 	core.InitIPDB()
-
 	flags.Run()
-	router.Run()
 
+	router.Run()
 }

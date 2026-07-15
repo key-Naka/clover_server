@@ -19,6 +19,7 @@ func InitRedis() *redis.Client {
 	_, err := redisDB.Ping().Result()
 	if err != nil {
 		slog.Error("redis连接失败", "err", err)
+		return nil
 	}
 	slog.Info("redis连接成功")
 	return redisDB

@@ -1,4 +1,3 @@
-// conf/conf_jwt.go
 package conf
 
 type JWT struct {

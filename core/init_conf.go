@@ -2,8 +2,11 @@ package core
 
 import (
 	"clover_server/conf"
+	"clover_server/flags"
+	"clover_server/global"
 	"clover_server/logger"
 	"fmt"
+	"log/slog"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -42,4 +45,18 @@ func InitConf(path string) *conf.Config {
 	}
 
 	return &cfg
+}
+
+func SetConf() {
+	byteData, err := yaml.Marshal(global.Config)
+	if err != nil {
+		slog.Error("配置序列化失败", "err", err)
+		return
+	}
+
+	err = os.WriteFile(flags.FlagsOptions.File, byteData, 0666)
+	if err != nil {
+		slog.Error("写入配置文件失败", "err", err, "path", flags.FlagsOptions.File)
+		return
+	}
 }

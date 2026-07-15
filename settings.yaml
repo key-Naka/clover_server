@@ -22,6 +22,87 @@ redis:
   addr: "127.0.0.1:6379"
   password: ""
   db: 1
+site:
+  siteInfo:
+    title: ""
+    enTitle: ""
+    slogan: ""
+    logo: ""
+    beian: ""
+    mode: 1
+  project:
+    title: ""
+    icon: ""
+    webPath: ""
+  seo:
+    keywords: ""
+    description: ""
+  about:
+    siteDate: "2024-09-18"
+    qq: https://www.fengfengzhidao.com/uploads/file/%E6%9E%AB%E6%9E%AB/qq_20231015141644.png
+    wechat: https://image.fengfengzhidao.com/rj_0731/10ca538e2acd66bc81e5f777f256372.jpg
+    gitee: https://gitee.com/fengfengzhidao
+    bilibili: https://space.bilibili.com/359151217
+    github: https://github.com/fengfengzhidao/
+  login:
+    qqLogin: false
+    usernamePwdLogin: true
+    emailLogin: false
+    captcha: false
+  indexRight:
+    list:
+    - title: 独家推广
+      enable: true
+    - title: 用户反馈
+      enable: false
+    - title: 标签云
+      enable: true
+    - title: 文章推荐
+      enable: true
+    - title: 关于我们
+      enable: true
+    - title: 作者推荐
+      enable: true
+  article:
+    noExamine: true
+    commentLine: 4
+email:
+  domain: smtp.qq.com
+  port: 587
+  sendEmail: 2974771769@qq.com
+  authCode: ""
+  sendNickname: 枫枫知道
+  ssl: true
+  tls: false
+qq:
+  appID: "747573454"
+  appKey: ""
+  redirect: http://xxxxx
+qiNiu:
+  enable: true
+  accessKey: XEe6Q41waiVlrYAfGbhFbPvD9Lhb9dKt9T-4JcIq
+  secretKey: "1QkEJelBZFWqHFOMZCHU7P5T4EZ0_1__IcuYx8x7"
+  bucket: kagari
+  uri: http://ti7cxe1e5.hn-bkt.clouddn.com
+  region: z2
+  prefix: clover
+  size: 3
+  expiry: 60
+ai:
+  enable: false
+  secretKey: njdfnhj6344t45347gsdhgsdh
+  nickname: 小枫
+  avatar: /xxx/xxx
+  abstract: Hello，我是你的AI小管家,你可以叫我小枫,我可以根据你的描述在全站文章中去找到你所喜欢的文章,赶紧来试试吧！
+upload:
+  size: 10
+  whiteList:
+  - jpg
+  - jpeg
+  - png
+  - webp
+  - gif
+  uploadDir: uploads/images
 db:
   host: localhost
   port: 3306

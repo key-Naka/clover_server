@@ -1,4 +1,3 @@
-// conf/conf_redis.go
 package conf
 
 type RedisConfig struct {
