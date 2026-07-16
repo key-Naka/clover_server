@@ -8,6 +8,7 @@ import (
 	"clover_server/models/enum"
 	"clover_server/service/log_service"
 	"fmt"
+	"log/slog"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,6 +32,7 @@ type LogListResponse struct {
 func (l *LogApi) GetLogList(c *gin.Context) {
 	var req LogListRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
+		slog.Warn("绑定日志列表查询参数失败", "path", c.Request.URL.Path, "client_ip", c.ClientIP(), "err", err)
 		res.FailWithError(err, c)
 		return
 	}
@@ -47,6 +49,7 @@ func (l *LogApi) GetLogList(c *gin.Context) {
 		Preloads: []string{"UserModel"},
 	})
 	if err != nil {
+		slog.Error("获取日志列表失败", "err", err, "log_type", req.LogType, "level", req.Level, "user_id", req.UserID, "ip", req.Ip, "service_name", req.ServiceName)
 		res.FailWithData(err.Error(), "获取日志列表失败", c)
 		return
 	}
@@ -65,70 +68,75 @@ func (l *LogApi) GetLogList(c *gin.Context) {
 
 // LogReadView 是一个处理日志读取视图的函数，它接收一个 gin.Context 类型的参数
 func (l *LogApi) LogReadView(c *gin.Context) {
-    // 定义一个 models.IDRequest 类型的变量 req，用于接收请求参数
 	var req models.IDRequest
-    // 使用 ShouldBindUri 方法将 URI 参数绑定到 req 结构体上，如果绑定失败则返回错误
 	if err := c.ShouldBindUri(&req); err != nil {
+		slog.Warn("绑定日志读取参数失败", "path", c.Request.URL.Path, "client_ip", c.ClientIP(), "err", err)
 		res.FailWithError(err, c)
 		return
 	}
 
-    // 定义一个 models.LogModel 类型的变量 logModel，用于存储日志数据
 	var logModel models.LogModel
-    // 使用 global.DB.Take 方法根据 ID 查询日志数据，如果查询失败则返回错误
 	result := global.DB.Take(&logModel, req.ID)
 	if result.Error != nil {
+		slog.Warn("日志读取失败，日志不存在", "log_id", req.ID)
 		res.FailWithMsg("日志不存在", c)
 		return
 	}
-    // 检查日志是否已被读取，如果已读取则返回错误
 	if logModel.IsRead {
+		slog.Info("日志重复读取", "log_id", req.ID)
 		res.FailWithMsg("日志已读取", c)
 		return
 	}
 
-    // 使用 global.DB.Model 更新日志的 is_read 字段为 true，表示已读取
 	result = global.DB.Model(&logModel).Update("is_read", true)
 	if result.Error != nil {
+		slog.Error("更新日志已读状态失败", "err", result.Error, "log_id", req.ID)
 		res.FailWithMsg("更新日志详情失败", c)
 		return
 	}
-    // 检查是否有行被更新，如果没有则说明更新失败
 	if result.RowsAffected == 0 {
+		slog.Warn("日志已读状态未更新", "log_id", req.ID)
 		res.FailWithMsg("日志读取失败", c)
 		return
 	}
 
-    // 如果所有操作都成功，则返回成功消息
 	res.OkWithMsg("日志读取成功", c)
 }
 func (l *LogApi) LogRemoveView(c *gin.Context) {
 	var req models.RemoveRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
+		slog.Warn("绑定删除日志参数失败", "path", c.Request.URL.Path, "client_ip", c.ClientIP(), "err", err)
 		res.FailWithError(err, c)
 		return
 	}
 	log := log_service.GetLog(c)
 	log.ShowRequest()
 	log.ShowResponse()
+	log.SetTitle("删除日志")
+	log.SetItemInfo("日志ID列表", req.IDList)
 
 	var logModel []models.LogModel
 	result := global.DB.Find(&logModel, req.IDList)
 	if result.Error != nil {
+		slog.Error("查询待删除日志失败", "err", result.Error, "id_list", req.IDList)
 		res.FailWithMsg("查询日志失败", c)
 		return
 	}
 	if len(logModel) == 0 {
+		slog.Warn("删除日志失败，日志不存在", "id_list", req.IDList)
 		res.FailWithMsg("日志不存在", c)
 		return
 	}
 
 	result = global.DB.Delete(&logModel)
 	if result.Error != nil {
+		slog.Error("删除日志失败", "err", result.Error, "id_list", req.IDList)
 		res.FailWithMsg("删除日志失败", c)
 		return
 	}
 
+	log.SetItemInfo("删除数量", result.RowsAffected)
+	slog.Info("删除日志成功", "count", result.RowsAffected, "id_list", req.IDList)
 	msg := fmt.Sprintf("删除%d条日志成功", result.RowsAffected)
 	res.OkWithMsg(msg, c)
 }

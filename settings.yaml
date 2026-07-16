@@ -69,9 +69,9 @@ site:
 email:
   domain: smtp.qq.com
   port: 587
-  sendEmail: 2974771769@qq.com
+  sendEmail: 
   authCode: ""
-  sendNickname: 枫枫知道
+  sendNickname: 
   ssl: true
   tls: false
 qq:
@@ -91,9 +91,9 @@ qiNiu:
 ai:
   enable: false
   secretKey: njdfnhj6344t45347gsdhgsdh
-  nickname: 小枫
+  nickname: 
   avatar: /xxx/xxx
-  abstract: Hello，我是你的AI小管家,你可以叫我小枫,我可以根据你的描述在全站文章中去找到你所喜欢的文章,赶紧来试试吧！
+  abstract: 
 upload:
   size: 10
   whiteList:
@@ -110,7 +110,7 @@ db:
   password: rewrite123
   dbname: clover
   charset: utf8mb4
-  debug: false
+  debug: true
   source: mysql
 
 db1:
@@ -120,5 +120,5 @@ db1:
   password: rewrite123
   dbname: clover
   charset: utf8mb4
-  debug: false
+  debug: true
   source: mysql

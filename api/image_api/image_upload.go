@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"path/filepath"
 	"strings"
 
@@ -19,6 +20,7 @@ import (
 func (i ImageApi) ImageUploadView(c *gin.Context) {
 	fileHeader, err := c.FormFile("file")
 	if err != nil {
+		slog.Warn("获取上传文件失败", "path", c.Request.URL.Path, "client_ip", c.ClientIP(), "err", err)
 		res.FailWithError(err, c)
 		return
 	}
@@ -26,18 +28,21 @@ func (i ImageApi) ImageUploadView(c *gin.Context) {
 	uploadConf := global.Config.Upload
 	maxSize := int64(uploadConf.Size) * 1024 * 1024
 	if maxSize > 0 && fileHeader.Size > maxSize {
+		slog.Warn("上传文件大小超限", "filename", fileHeader.Filename, "size", fileHeader.Size, "max_size", maxSize)
 		res.FailWithMsg(fmt.Sprintf("文件大小不能超过%dMB", uploadConf.Size), c)
 		return
 	}
 
 	ext := strings.TrimPrefix(strings.ToLower(filepath.Ext(fileHeader.Filename)), ".")
 	if ext == "" || !isAllowedUploadExt(ext, uploadConf.WhiteList) {
+		slog.Warn("上传文件后缀不允许", "filename", fileHeader.Filename, "ext", ext, "allow_list", uploadConf.WhiteList)
 		res.FailWithMsg(fmt.Sprintf("文件后缀必须为%s", strings.Join(uploadConf.WhiteList, "、")), c)
 		return
 	}
 
 	file, err := fileHeader.Open()
 	if err != nil {
+		slog.Error("打开上传文件失败", "filename", fileHeader.Filename, "err", err)
 		res.FailWithError(err, c)
 		return
 	}
@@ -45,6 +50,7 @@ func (i ImageApi) ImageUploadView(c *gin.Context) {
 
 	fileBytes, err := io.ReadAll(file)
 	if err != nil {
+		slog.Error("读取上传文件失败", "filename", fileHeader.Filename, "err", err)
 		res.FailWithError(err, c)
 		return
 	}
@@ -53,10 +59,12 @@ func (i ImageApi) ImageUploadView(c *gin.Context) {
 	var imageModel models.ImageModel
 	err = global.DB.Where("hash = ?", fileHash).Take(&imageModel).Error
 	if err == nil {
+		slog.Info("图片重复上传，返回已存在文件", "filename", fileHeader.Filename, "hash", fileHash, "image_id", imageModel.ID)
 		res.OkWithData(BuildImageUploadResponse(imageModel), c)
 		return
 	}
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		slog.Error("查询图片哈希失败", "filename", fileHeader.Filename, "hash", fileHash, "err", err)
 		res.FailWithError(err, c)
 		return
 	}
@@ -64,12 +72,14 @@ func (i ImageApi) ImageUploadView(c *gin.Context) {
 	saveFilename := fmt.Sprintf("%s.%s", fileHash, ext)
 	savePath := filepath.Join(uploadConf.UploadDir, saveFilename)
 	if err = c.SaveUploadedFile(fileHeader, savePath); err != nil {
+		slog.Error("保存上传文件失败", "filename", fileHeader.Filename, "save_path", savePath, "err", err)
 		res.FailWithError(err, c)
 		return
 	}
 
 	if global.Config.QiNiu.Enable {
 		if _, err = qiniu_service.SendFile(savePath); err != nil {
+			slog.Error("上传文件到七牛失败", "filename", saveFilename, "save_path", savePath, "err", err)
 			res.FailWithError(err, c)
 			return
 		}
@@ -82,10 +92,12 @@ func (i ImageApi) ImageUploadView(c *gin.Context) {
 		Hash:     fileHash,
 	}
 	if err = global.DB.Create(&imageModel).Error; err != nil {
+		slog.Error("保存图片记录失败", "filename", saveFilename, "path", savePath, "hash", fileHash, "err", err)
 		res.FailWithError(err, c)
 		return
 	}
 
+	slog.Info("图片上传成功", "image_id", imageModel.ID, "filename", saveFilename, "path", savePath, "size", fileHeader.Size, "hash", fileHash)
 	res.OkWithData(BuildImageUploadResponse(imageModel), c)
 }
 

@@ -3,6 +3,7 @@ package middleware
 import (
 	"bytes"
 	"io"
+	"log/slog"
 
 	"clover_server/service/log_service"
 
@@ -23,7 +24,11 @@ func LogMiddleware(c *gin.Context) {
 
 	var bodyBytes []byte
 	if c.Request.Body != nil {
-		bodyBytes, _ = io.ReadAll(c.Request.Body)
+		var err error
+		bodyBytes, err = io.ReadAll(c.Request.Body)
+		if err != nil {
+			slog.Warn("读取请求体失败", "path", c.Request.URL.Path, "method", c.Request.Method, "client_ip", c.ClientIP(), "err", err)
+		}
 		c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 	}
 	ActionLog.SetRequestBody(bodyBytes)
@@ -37,5 +42,4 @@ func LogMiddleware(c *gin.Context) {
 	ActionLog.SetResponseBody(resw.body.Bytes())
 	ActionLog.SetResponseHeader(c.Writer.Header())
 	ActionLog.MiddlewareSave()
-
 }

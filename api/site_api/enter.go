@@ -24,6 +24,7 @@ func (s *SiteApi) SiteinfoView(c *gin.Context) {
 	var cr SiteInfoRequest
 	err := c.ShouldBindUri(&cr)
 	if err != nil {
+		slog.Warn("绑定站点配置查询参数失败", "path", c.Request.URL.Path, "client_ip", c.ClientIP(), "err", err)
 		res.FailWithMsg(err.Error(), c)
 		return
 	}
@@ -34,6 +35,7 @@ func (s *SiteApi) SiteinfoView(c *gin.Context) {
 	}
 	_, ok := c.Get("claims")
 	if !ok {
+		slog.Warn("读取站点配置失败，权限不足", "name", cr.Name, "path", c.Request.URL.Path, "client_ip", c.ClientIP())
 		res.FailWithMsg("权限不足", c)
 		return
 	}
@@ -59,6 +61,7 @@ func (s *SiteApi) SiteinfoView(c *gin.Context) {
 		rep.SecretKey = "******"
 		data = rep
 	default:
+		slog.Warn("读取站点配置失败，不支持的配置项", "name", cr.Name)
 		res.FailWithMsg("不支持的配置项", c)
 		return
 	}
@@ -71,6 +74,7 @@ func (SiteApi) SiteUpdateView(c *gin.Context) {
 	var cr SiteInfoRequest
 	err := c.ShouldBindUri(&cr)
 	if err != nil {
+		slog.Warn("绑定站点配置更新参数失败", "path", c.Request.URL.Path, "client_ip", c.ClientIP(), "err", err)
 		res.FailWithError(err, c)
 		return
 	}
@@ -98,10 +102,12 @@ func (SiteApi) SiteUpdateView(c *gin.Context) {
 		err = c.ShouldBindJSON(&data)
 		rep = data
 	default:
+		slog.Warn("更新站点配置失败，不存在的配置项", "name", cr.Name)
 		res.FailWithMsg("不存在的配置", c)
 		return
 	}
 	if err != nil {
+		slog.Warn("绑定站点配置内容失败", "name", cr.Name, "path", c.Request.URL.Path, "client_ip", c.ClientIP(), "err", err)
 		res.FailWithError(err, c)
 		return
 	}
@@ -110,6 +116,7 @@ func (SiteApi) SiteUpdateView(c *gin.Context) {
 	case conf.Site:
 		err = UpdateSite(s)
 		if err != nil {
+			slog.Error("更新站点首页文件失败", "err", err, "web_path", s.Project.WebPath)
 			res.FailWithError(err, c)
 			return
 		}
@@ -136,11 +143,10 @@ func (SiteApi) SiteUpdateView(c *gin.Context) {
 		global.Config.Ai = s
 	}
 
-	// 改配置文件
 	core.SetConf()
+	slog.Info("更新站点配置成功", "name", cr.Name)
 
 	res.OkWithMsg("更新站点配置成功", c)
-	return
 }
 func UpdateSite(site conf.Site) error {
 	if site.Project.Icon == "" && site.Project.Title == "" &&
@@ -208,5 +214,6 @@ func UpdateSite(site conf.Site) error {
 		slog.Error("写入站点文件失败", "err", err, "path", site.Project.WebPath)
 		return errors.New("文件写入失败")
 	}
+	slog.Info("站点首页文件更新成功", "path", site.Project.WebPath)
 	return nil
 }

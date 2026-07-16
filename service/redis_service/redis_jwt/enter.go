@@ -50,20 +50,23 @@ func TokenBlack(token string, value BlackType) {
 
 	claims, err := jwts.ParseToken(token)
 	if err != nil || claims == nil {
-		slog.Error("token解析失败", slog.Any("err", err))
+		slog.Error("token解析失败，加入黑名单终止", "err", err)
 		return
 	}
 
 	second := claims.ExpiresAt.Unix() - time.Now().Unix()
 	if second <= 0 {
+		slog.Warn("token已过期，无需加入黑名单", "user_id", claims.UserID, "username", claims.Username, "black_type", value.String())
 		return
 	}
 
 	_, err = global.Redis.Set(key, value.String(), time.Duration(second)*time.Second).Result()
 	if err != nil {
-		slog.Error("redis添加黑名单失败", slog.Any("err", err))
+		slog.Error("redis添加黑名单失败", "err", err, "user_id", claims.UserID, "username", claims.Username, "black_type", value.String())
 		return
 	}
+
+	slog.Info("token加入黑名单成功", "user_id", claims.UserID, "username", claims.Username, "black_type", value.String(), "expired_in_seconds", second)
 }
 
 func HasTokenBlack(token string) (blk BlackType, ok bool) {

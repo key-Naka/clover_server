@@ -105,7 +105,7 @@ func (ac *ActionLog) SetError(label string, err error) {
 func (ac *ActionLog) SetRequest(c *gin.Context) {
 	byteData, err := io.ReadAll(c.Request.Body)
 	if err != nil {
-		slog.Error(err.Error())
+		slog.Error("读取操作日志请求体失败", "path", c.Request.URL.Path, "method", c.Request.Method, "err", err)
 	}
 	c.Request.Body = io.NopCloser(bytes.NewReader(byteData))
 	ac.requestBody = byteData
@@ -174,9 +174,12 @@ func (ac *ActionLog) Save() (id uint) {
 		newContent := strings.Join(ac.itemList, "")
 		updatedContent := ac.log.Content + newContent
 
-		global.DB.Model(ac.log).Updates(map[string]interface{}{
+		if err := global.DB.Model(ac.log).Updates(map[string]interface{}{
 			"content": updatedContent,
-		})
+		}).Error; err != nil {
+			slog.Error("更新操作日志失败", "err", err, "log_id", ac.log.ID, "title", ac.title)
+			return 0
+		}
 		ac.itemList = []string{}
 		return ac.log.ID
 	}
@@ -202,7 +205,7 @@ func (ac *ActionLog) Save() (id uint) {
 	}
 	err = global.DB.Create(&log).Error
 	if err != nil {
-		slog.Warn("日志创建错误", "err", err)
+		slog.Warn("日志创建错误", "err", err, "title", ac.title, "path", ac.c.Request.URL.Path, "method", ac.c.Request.Method)
 		return 0
 	}
 	ac.log = &log

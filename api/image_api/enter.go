@@ -7,6 +7,7 @@ import (
 	"clover_server/models"
 	"clover_server/service/log_service"
 	"fmt"
+	"log/slog"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,12 +22,15 @@ type ImageListViewResponse struct {
 
 func (ImageApi) ImageListView(c *gin.Context) {
 	var pageInfo common.PageInfo
-	c.ShouldBindQuery(&pageInfo)
+	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+		slog.Warn("绑定图片列表查询参数失败", "path", c.Request.URL.Path, "client_ip", c.ClientIP(), "err", err)
+	}
 	list, count, err := common.ListQuery(models.ImageModel{}, common.Options{
 		PageInfo: pageInfo,
 		Likes:    []string{"filename"},
 	})
 	if err != nil {
+		slog.Error("获取图片列表失败", "err", err, "page", pageInfo.Page, "limit", pageInfo.Limit, "key", pageInfo.Key)
 		res.FailWithError(err, c)
 		return
 	}
@@ -45,10 +49,12 @@ func (ImageApi) ImageListView(c *gin.Context) {
 func (ImageApi) ImageRemoveView(c *gin.Context) {
 	var req models.RemoveRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
+		slog.Warn("绑定删除图片参数失败", "path", c.Request.URL.Path, "client_ip", c.ClientIP(), "err", err)
 		res.FailWithError(err, c)
 		return
 	}
 	if len(req.IDList) == 0 {
+		slog.Warn("删除图片失败，未选择图片", "path", c.Request.URL.Path, "client_ip", c.ClientIP())
 		res.FailWithMsg("请选择要删除的图片", c)
 		return
 	}
@@ -56,27 +62,35 @@ func (ImageApi) ImageRemoveView(c *gin.Context) {
 	log := log_service.GetLog(c)
 	log.ShowRequest()
 	log.ShowResponse()
+	log.SetTitle("删除图片")
+	log.SetItemInfo("图片ID列表", req.IDList)
 
 	var imageModel []models.ImageModel
 	result := global.DB.Find(&imageModel, req.IDList)
 	if result.Error != nil {
+		slog.Error("查询待删除图片失败", "err", result.Error, "id_list", req.IDList)
 		res.FailWithMsg("查询图片失败", c)
 		return
 	}
 	if len(imageModel) == 0 {
+		slog.Warn("删除图片失败，图片不存在", "id_list", req.IDList)
 		res.FailWithMsg("图片不存在", c)
 		return
 	}
 	if int64(len(imageModel)) != int64(len(req.IDList)) {
+		slog.Warn("删除图片失败，存在部分图片缺失", "request_count", len(req.IDList), "found_count", len(imageModel), "id_list", req.IDList)
 		res.FailWithMsg("部分图片不存在，删除失败", c)
 		return
 	}
 
 	if err := global.DB.Delete(&imageModel).Error; err != nil {
+		slog.Error("删除图片失败", "err", err, "id_list", req.IDList)
 		res.FailWithMsg("删除图片失败", c)
 		return
 	}
 
+	log.SetItemInfo("删除数量", len(imageModel))
+	slog.Info("删除图片成功", "count", len(imageModel), "id_list", req.IDList)
 	msg := fmt.Sprintf("删除%d条图片成功", len(imageModel))
 	res.OkWithMsg(msg, c)
 }
