@@ -30,6 +30,8 @@ site:
     logo: ""
     beian: ""
     mode: 1
+  captcha:
+    enable: true
   project:
     title: ""
     icon: ""

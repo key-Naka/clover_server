@@ -25,6 +25,7 @@ func AuthMiddleware(c *gin.Context) {
 		c.Abort()
 		return
 	}
+	
 	c.Set("claims", claims)
 }
 func AdminAuthMiddleware(c *gin.Context) {

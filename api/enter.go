@@ -1,15 +1,21 @@
 package api
 
 import (
+	"clover_server/api/banner_api"
+	"clover_server/api/captcha_api"
 	"clover_server/api/image_api"
 	"clover_server/api/log_api"
 	"clover_server/api/site_api"
+	"clover_server/api/user_api"
 )
 
 type Api struct {
-	ImageApi image_api.ImageApi
-	SiteApi  site_api.SiteApi
-	LogApi   log_api.LogApi
+	ImageApi   image_api.ImageApi
+	SiteApi    site_api.SiteApi
+	LogApi     log_api.LogApi
+	BannerApi  banner_api.BannerApi
+	CaptchaApi captcha_api.CaptchaApi
+	UserApi    user_api.UserApi
 }
 
 var App = Api{}

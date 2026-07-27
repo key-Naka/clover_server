@@ -15,5 +15,8 @@ func Run() {
 	ImageRouter(rg)
 	SiteRouter(rg)
 	LogRouter(rg)
+	BannerRouter(rg)
+	CaptchaRouter(rg)
+
 	r.Run(global.Config.System.GetAddr())
 }

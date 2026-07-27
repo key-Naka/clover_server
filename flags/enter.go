@@ -1,7 +1,9 @@
 package flags
 
 import (
+	"clover_server/global"
 	"flag"
+	"fmt"
 	"os"
 )
 
@@ -21,9 +23,13 @@ func ParseFlags() {
 }
 
 func Run() {
+	if FlagsOptions.Version {
+		fmt.Println(global.Version)
+		os.Exit(0)
+	}
+
 	if FlagsOptions.DB {
 		FlagDB()
 		os.Exit(0)
 	}
-
 }

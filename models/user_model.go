@@ -10,9 +10,10 @@ type UserModel struct {
 	Nickname       string `gorm:"size:32"  json:nickname`
 	Avatar         string `gorm:"size:256"  json:avatar`
 	Abstract       string `gorm:"size:256"  json:abstract`
-	RegisterSource int8   ` json:"registerSource"`
-	Password       string `gorm:"size:256"  json:password`
-	OpenID         string `gorm:"size:64"  json:openID`
+	RegisterSource int8   `json:"registerSource"`
+	Password       string `gorm:"size:256" json:"password"`
+	Email          string `gorm:"size:128" json:"email"`
+	OpenID         string `gorm:"size:64" json:"openID"`
 	Role           int8   ` json:"role"` //1管理员 2普通用户 3访客
 }
 
