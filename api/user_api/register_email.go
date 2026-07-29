@@ -43,10 +43,10 @@ func (UserApi) RegisterEmailView(c *gin.Context) {
 	var user = models.UserModel{
 		Username:       fmt.Sprintf("b_%s", uname),
 		Nickname:       "邮箱用户",
-		RegisterSource: int8(enum.EmailLoginType),
+		RegisterSource: enum.RegisterEmailSourceType,
 		Password:       hashPwd,
 		Email:          email,
-		Role:           int8(enum.UserRole),
+		Role:           enum.UserRole,
 	}
 
 	err = global.DB.Create(&user).Error

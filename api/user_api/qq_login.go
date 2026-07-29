@@ -43,9 +43,9 @@ func (u *UserApi) QQLoginView(c *gin.Context) {
 			Username:       fmt.Sprintf("c_%s", uname),
 			Nickname:       info.Nickname,
 			Avatar:         info.Avatar,
-			RegisterSource: int8(enum.RegisterQQSourceType),
+			RegisterSource: enum.RegisterQQSourceType,
 			OpenID:         info.OpenID,
-			Role:           int8(enum.UserRole),
+			Role:           enum.UserRole,
 		}
 		err = global.DB.Create(&user).Error
 		if err != nil {

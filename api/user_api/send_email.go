@@ -59,7 +59,7 @@ func (u *UserApi) SendEmail(c *gin.Context) {
 			return
 		}
 		// 还必须得是邮箱注册的
-		if user.RegisterSource != int8(enum.EmailLoginType) {
+		if user.RegisterSource != enum.RegisterEmailSourceType {
 			res.FailWithMsg("非邮箱注册用户，不能重置密码", c)
 			return
 		}
