@@ -21,6 +21,7 @@ func FlagDB() {
 		&models.LogModel{},
 		&models.GlobalNotificationModel{},
 		&models.LogModel{},
+		&models.UserLoginModel{},
 	)
 	if err != nil {
 		slog.Error("数据库迁移失败", "err", err)

@@ -9,25 +9,27 @@ import (
 	"github.com/jordan-wright/email"
 )
 
-var em = global.Config.Email
-
 func SendRegisterCode(to string, code string) error {
+	em := global.Config.Email
 	subject := fmt.Sprintf("【%s】账号注册", em.SendNickname)
 	text := fmt.Sprintf("你正在进行账号注册操作，这是你的验证码%s ，十分钟内有效", code)
 	return SendEmail(to, text, subject)
 }
 func SendResetPasswordCode(to string, code string) error {
+	em := global.Config.Email
 	subject := fmt.Sprintf("【%s】重置密码", em.SendNickname)
 	text := fmt.Sprintf("你正在进行账号密码重置操作，这是你的验证码%s ，十分钟内有效", code)
 	return SendEmail(to, text, subject)
 }
 func SendBIndEmailCode(to string, code string) error {
+	em := global.Config.Email
 	subject := fmt.Sprintf("【%s】绑定邮箱", em.SendNickname)
 	text := fmt.Sprintf("你正在进行账号邮箱绑定操作，这是你的验证码%s ，十分钟内有效", code)
 	return SendEmail(to, text, subject)
 }
 
 func SendEmail(to string, text string, subject string) error {
+	em := global.Config.Email
 	e := email.NewEmail()
 	e.From = fmt.Sprintf("%s <%s>", em.SendNickname, em.SendEmail)
 	e.To = []string{to}
