@@ -14,7 +14,7 @@ type CaptchaMiddlewareRequest struct {
 	ID   string `json:"id"`
 }
 
-func captchaMiddleware(c *gin.Context) {
+func CaptchaMiddleware(c *gin.Context) {
 	if !global.Config.Site.Captcha.Enable {
 		c.Next()
 		return
