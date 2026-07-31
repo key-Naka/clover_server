@@ -47,6 +47,17 @@ func Run() {
 		default:
 			fmt.Println("未知运行类型")
 		}
+	case "es":
+		switch FlagsOptions.Sub {
+		case "index":
+			EsIndex()
+			os.Exit(0)
+		case "sync":
+			EsSync()
+			os.Exit(0)
+		default:
+			fmt.Println("未知运行类型")
+		}
 	}
 
 }

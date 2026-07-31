@@ -57,7 +57,41 @@ const (
         "type": "integer"
       },
       "open_comment": {
-        "type": "integer"
+        "type": "boolean"
+      },
+      "comments": {
+        "type": "nested",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "date",
+            "null_value": "null"
+          },
+          "updated_at": {
+            "type": "date",
+            "null_value": "null"
+          },
+          "content": {
+            "type": "text"
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "article_id": {
+            "type": "integer"
+          },
+          "parent_id": {
+            "type": "integer"
+          },
+          "root_parent_id": {
+            "type": "integer"
+          },
+          "digg_count": {
+            "type": "integer"
+          }
+        }
       }
     }
   }
