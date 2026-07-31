@@ -6,6 +6,7 @@ type Config struct {
 	Jwt    JWT         `yaml:"jwt"`
 	Log    LogConfig   `yaml:"log"`
 	Redis  RedisConfig `yaml:"redis"`
+	Es     ESConfig    `yaml:"es"`
 	DB     DBConfig    `yaml:"db"`
 	DB1    DBConfig    `yaml:"db1"` // 数据库连接列表
 	Site   Site        `yaml:"site"`

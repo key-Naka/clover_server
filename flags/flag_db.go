@@ -4,10 +4,12 @@ import (
 	"clover_server/global"
 	"clover_server/models"
 	"log/slog"
+
+	"gorm.io/plugin/dbresolver"
 )
 
 func FlagDB() {
-	err := global.DB.AutoMigrate(&models.UserModel{},
+	err := global.DB.Clauses(dbresolver.Write).AutoMigrate(&models.UserModel{},
 		&models.UserConfModel{},
 		&models.ArticleModel{},
 		&models.ArticleDiggModel{},

@@ -105,8 +105,15 @@ upload:
   - webp
   - gif
   uploadDir: uploads/images
+es:
+  host: 192.168.40.128
+  port: 9200
+  scheme: http
+  username: ""
+  password: ""
+  enable: true
 db:
-  host: localhost
+  host: 192.168.40.128
   port: 3306
   username: root
   password: rewrite123
@@ -114,10 +121,9 @@ db:
   charset: utf8mb4
   debug: true
   source: mysql
-
 db1:
-  host: localhost
-  port: 3306
+  host: 192.168.40.128
+  port: 3307
   username: root
   password: rewrite123
   dbname: clover

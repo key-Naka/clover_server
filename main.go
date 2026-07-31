@@ -24,6 +24,7 @@ func main() {
 
 	global.DB = core.InitDB()
 	global.Redis = core.InitRedis()
+	global.ES = core.InitES()
 	core.InitIPDB()
 	flags.Run()
 
