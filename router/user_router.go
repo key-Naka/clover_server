@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRouter(rg *gin.Engine) {
+func UserRouter(rg *gin.RouterGroup) {
 	var App = api.App.UserApi
 	rg.POST("user/send_email", middleware.EmailVerifyMiddleware, App.SendEmail)
 	rg.POST("user/email", middleware.EmailVerifyMiddleware, App.RegisterEmailView)

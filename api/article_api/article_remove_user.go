@@ -1,0 +1,44 @@
+package article_api
+
+import (
+	"clover_server/common/res"
+	"clover_server/global"
+	"clover_server/models"
+	"clover_server/service/es_service"
+	"clover_server/utils/jwts"
+
+	"github.com/gin-gonic/gin"
+)
+
+func (ArticleApi) ArticleRemoveUserView(c *gin.Context) {
+	var req models.IDRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		res.FailWithError(err, c)
+		return
+	}
+	claims := jwts.GetClaims(c)
+	if claims == nil {
+		res.FailWithMsg("请登录", c)
+		return
+	}
+
+	var article models.ArticleModel
+	if err := global.DB.Take(&article, req.ID).Error; err != nil {
+		res.FailWithMsg("文章不存在", c)
+		return
+	}
+	if article.UserID != claims.UserID {
+		res.FailWithMsg("无权限删除此文章", c)
+		return
+	}
+
+	if err := global.DB.Delete(&article).Error; err != nil {
+		res.FailWithError(err, c)
+		return
+	}
+	if err := es_service.DeleteArticleDocument(article.ID); err != nil && global.ES != nil {
+		res.FailWithMsg(err.Error(), c)
+		return
+	}
+	res.OkWithMsg("文章删除成功", c)
+}
