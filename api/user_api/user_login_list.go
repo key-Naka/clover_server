@@ -61,7 +61,7 @@ func (UserApi) UserLoginListView(c *gin.Context) {
 
 	_list, count, _ := common.ListQuery(models.UserLoginModel{
 		UserID: cr.UserID,
-		Ip:     cr.Ip,
+		IP:     cr.Ip,
 		Addr:   cr.Addr,
 	}, common.Options{
 		PageInfo: cr.PageInfo,

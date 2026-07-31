@@ -16,7 +16,7 @@ func (u UserService) UserLogin(c *gin.Context) {
 	ua := c.GetHeader("User-Agent")
 	err := global.DB.Create(&models.UserLoginModel{
 		UserID: u.userModel.ID,
-		Ip:     ip,
+		IP:     ip,
 		Addr:   addr,
 		UA:     ua,
 	}).Error
