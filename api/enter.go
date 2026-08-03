@@ -10,6 +10,7 @@ import (
 	"clover_server/api/global_notification_api"
 	"clover_server/api/image_api"
 	"clover_server/api/log_api"
+	"clover_server/api/search_api"
 	"clover_server/api/site_api"
 	"clover_server/api/user_api"
 )
@@ -26,6 +27,7 @@ type Api struct {
 	DataApi               data_api.DataApi
 	FocusApi              focus_api.FocusApi
 	GlobalNotificationApi global_notification_api.GlobalNotificationApi
+	SearchApi             search_api.SearchApi
 }
 
 var App = Api{}

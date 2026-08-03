@@ -17,6 +17,7 @@ func Run() {
 	DataRouter(rg)
 	FocusRouter(rg)
 	GlobalNotificationRouter(rg)
+	SearchRouter(rg)
 	ImageRouter(rg)
 	SiteRouter(rg)
 	LogRouter(rg)
