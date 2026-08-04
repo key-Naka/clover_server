@@ -4,6 +4,7 @@ import (
 	"clover_server/api/article_api"
 	"clover_server/api/banner_api"
 	"clover_server/api/captcha_api"
+	"clover_server/api/chat_api"
 	"clover_server/api/comment_api"
 	"clover_server/api/data_api"
 	"clover_server/api/focus_api"
@@ -12,6 +13,7 @@ import (
 	"clover_server/api/log_api"
 	"clover_server/api/search_api"
 	"clover_server/api/site_api"
+	"clover_server/api/site_msg_api"
 	"clover_server/api/user_api"
 )
 
@@ -28,6 +30,8 @@ type Api struct {
 	FocusApi              focus_api.FocusApi
 	GlobalNotificationApi global_notification_api.GlobalNotificationApi
 	SearchApi             search_api.SearchApi
+	ChatApi               chat_api.ChatApi
+	SiteMsgApi            site_msg_api.SiteMsgApi
 }
 
 var App = Api{}

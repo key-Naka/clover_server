@@ -18,6 +18,8 @@ func Run() {
 	FocusRouter(rg)
 	GlobalNotificationRouter(rg)
 	SearchRouter(rg)
+	ChatRouter(rg)
+	SiteMsgRouter(rg)
 	ImageRouter(rg)
 	SiteRouter(rg)
 	LogRouter(rg)
