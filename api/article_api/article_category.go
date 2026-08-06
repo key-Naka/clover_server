@@ -23,6 +23,18 @@ type CategoryListRequest struct {
 	Type   int8 `form:"type" binding:"required,oneof=1 2 3"`
 }
 
+// CategoryCreateView 创建或更新当前用户的文章分类。
+// @Summary 创建或更新文章分类
+// @Description `id` 为 0 时创建分类；非 0 时更新当前用户已有分类。
+// @Tags 文章
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body CategoryCreateRequest true "分类信息"
+// @Success 200 {object} res.MessageResponse "分类创建或更新成功"
+// @Failure 400 {object} res.ErrorResponse "参数、归属或认证失败"
+// @Failure 500 {object} res.ErrorResponse "服务异常"
+// @Router /article/category [post]
 func (ArticleApi) CategoryCreateView(c *gin.Context) {
 	var req CategoryCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

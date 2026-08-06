@@ -15,6 +15,16 @@ type UpdatePasswordRequest struct {
 	Pwd    string `json:"pwd" binding:"required"`
 }
 
+// UpdatePasswordView 修改当前登录用户密码。
+// @Summary 修改密码
+// @Tags 用户
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body UpdatePasswordRequest true "旧密码与新密码"
+// @Success 200 {object} res.MessageResponse "密码修改成功"
+// @Failure 400 {object} res.ErrorResponse "参数、认证或旧密码校验失败"
+// @Router /user/password [put]
 func (UserApi) UpdatePasswordView(c *gin.Context) {
 	var req UpdatePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

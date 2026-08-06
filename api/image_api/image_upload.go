@@ -17,6 +17,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// ImageUploadView 上传图片。
+// @Summary 上传图片
+// @Description 仅管理员可调用。实际配置最大 10MB，仅接受 jpg、jpeg、png、webp、gif；服务以文件 MD5 去重，成功后返回本地及 Web 访问路径。
+// @Tags 图片
+// @Accept multipart/form-data
+// @Produce json
+// @Security BearerAuth
+// @Param file formData file true "图片文件"
+// @Success 200 {object} res.ImageUploadResponse "上传成功"
+// @Failure 400 {object} res.ErrorResponse "文件缺失、大小或格式不合法"
+// @Failure 500 {object} res.ErrorResponse "存储服务异常"
+// @Router /images [post]
 func (i ImageApi) ImageUploadView(c *gin.Context) {
 	fileHeader, err := c.FormFile("file")
 	if err != nil {

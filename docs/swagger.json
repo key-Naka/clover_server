@@ -1,0 +1,1352 @@
+{
+    "schemes": [
+        "https",
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Clover Server 的 REST API 文档。",
+        "title": "Clover Server API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/api",
+    "paths": {
+        "/article": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "`id`、`title`、`content`、`status` 必填。status：1 草稿、2 审核中、3 已发布、4 已拒绝。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "更新文章",
+                "parameters": [
+                    {
+                        "description": "更新后的文章内容",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/article_api.ArticleUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "文章更新成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数、归属、分类或认证失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "`title`、`content`、`status` 必填。status：1 草稿、2 审核中、3 已发布、4 已拒绝。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "创建文章",
+                "parameters": [
+                    {
+                        "description": "文章内容",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/article_api.ArticleCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "创建后的完整文章",
+                        "schema": {
+                            "$ref": "#/definitions/res.ArticleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数、分类或认证失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "删除文章",
+                "parameters": [
+                    {
+                        "description": "文章 ID",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.IDRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "文章删除成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数、归属或认证失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/article/category": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "`id` 为 0 时创建分类；非 0 时更新当前用户已有分类。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "创建或更新文章分类",
+                "parameters": [
+                    {
+                        "description": "分类信息",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/article_api.CategoryCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "分类创建或更新成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数、归属或认证失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/article/detail": {
+            "get": {
+                "description": "未登录用户只能读取已发布文章；携带 Bearer JWT 时可读取本人文章，管理员可读取任意文章。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "获取文章详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文章 ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "文章详情",
+                        "schema": {
+                            "$ref": "#/definitions/res.ArticleDetailResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数或文章可见性校验失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/article/list": {
+            "get": {
+                "description": "`type=1` 为指定用户已发布文章，必须提供 `userID`；`type=2` 为当前登录用户文章，需 Bearer JWT；`type=3` 为管理员视图，需管理员 Bearer JWT。`status` 用于状态筛选。",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "文章"
+                ],
+                "summary": "获取文章列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "页码，默认 1",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量，默认 10，最大 100",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "标题或摘要关键字",
+                        "name": "key",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "排序字段，默认 id desc",
+                        "name": "order",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "列表类型：1 用户公开文章；2 我的文章；3 管理员文章",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户 ID；type=1 时必填，type=3 时可选",
+                        "name": "userID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分类 ID",
+                        "name": "categoryID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "文章状态",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data 包含 list 与 count",
+                        "schema": {
+                            "$ref": "#/definitions/res.ArticleListResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数或权限校验失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/images": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "仅管理员可调用。实际配置最大 10MB，仅接受 jpg、jpeg、png、webp、gif；服务以文件 MD5 去重，成功后返回本地及 Web 访问路径。",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图片"
+                ],
+                "summary": "上传图片",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "图片文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "上传成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.ImageUploadResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "文件缺失、大小或格式不合法",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "存储服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图片"
+                ],
+                "summary": "删除图片",
+                "parameters": [
+                    {
+                        "description": "待删除的图片 ID 列表",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RemoveRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "图片删除成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数、认证或图片存在性校验失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "删除失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/images/qiniu": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "图片"
+                ],
+                "summary": "获取七牛云上传凭证",
+                "responses": {
+                    "200": {
+                        "description": "七牛 bucket、上传 token 与区域",
+                        "schema": {
+                            "$ref": "#/definitions/res.QiNiuTokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "七牛云未启用",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "生成上传凭证失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/email": {
+            "post": {
+                "description": "`emailID` 和 `emailCode` 必须由发送邮件验证码流程获得；路由实际由邮箱验证码中间件校验后才执行。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "邮箱注册",
+                "parameters": [
+                    {
+                        "description": "邮箱注册信息",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_api.RegisterEmailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "注册成功，data 为 JWT",
+                        "schema": {
+                            "$ref": "#/definitions/res.TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数校验、验证码或注册失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "公开接口。`val` 为用户名或邮箱，`password` 为账户密码；启用图形验证码时，验证码中间件额外校验 `id`（验证码 ID）和 `code`（验证码文本）。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "密码登录",
+                "parameters": [
+                    {
+                        "description": "用户名或邮箱、密码及可选图形验证码",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_api.PwdLoginSwaggerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "登录成功，data 为 JWT",
+                        "schema": {
+                            "$ref": "#/definitions/res.TokenResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数校验、图形验证码或账号密码错误",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/password": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "修改密码",
+                "parameters": [
+                    {
+                        "description": "旧密码与新密码",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_api.UpdatePasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "密码修改成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数、认证或旧密码校验失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/password/reset": {
+            "put": {
+                "description": "邮箱验证码中间件会从同一 JSON 请求体读取并校验 `emailID`、`emailCode`；校验成功后使用 `pwd` 重置该邮箱账户密码。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "重置密码",
+                "parameters": [
+                    {
+                        "description": "邮箱验证码与新密码",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_api.ResetPasswordSwaggerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "重置密码成功",
+                        "schema": {
+                            "$ref": "#/definitions/res.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数、邮箱验证码或账户状态校验失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/send_email": {
+            "post": {
+                "description": "请求体 `type`：1 注册、2 重置密码、3 绑定邮箱。当前路由已配置邮箱验证码中间件，该中间件要求请求中同时带有有效的 `emailID` 与 `emailCode`，因此直接首次调用会因中间件校验而无法进入本处理器；此处仅如实记录现状，未改变业务逻辑。",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "发送邮箱验证码",
+                "parameters": [
+                    {
+                        "description": "邮箱及验证码用途",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_api.SendEmailRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "邮箱验证码标识",
+                        "schema": {
+                            "$ref": "#/definitions/res.EmailCodeResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "参数、邮箱状态或中间件验证码校验失败",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "邮件服务异常",
+                        "schema": {
+                            "$ref": "#/definitions/res.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "article_api.ArticleCreateRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "status",
+                "title"
+            ],
+            "properties": {
+                "abstract": {
+                    "type": "string"
+                },
+                "categoryID": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "openComment": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3,
+                        4
+                    ]
+                },
+                "tagList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "article_api.ArticleUpdateRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "id",
+                "status",
+                "title"
+            ],
+            "properties": {
+                "abstract": {
+                    "type": "string"
+                },
+                "categoryID": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "openComment": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "integer",
+                    "enum": [
+                        1,
+                        2,
+                        3,
+                        4
+                    ]
+                },
+                "tagList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "article_api.CategoryCreateRequest": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.IDRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.RemoveRequest": {
+            "type": "object",
+            "properties": {
+                "idList": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "res.ArticleData": {
+            "type": "object",
+            "properties": {
+                "abstract": {
+                    "type": "string"
+                },
+                "categoryID": {
+                    "type": "integer"
+                },
+                "collectCount": {
+                    "type": "integer"
+                },
+                "commentCount": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "diggCount": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lookCount": {
+                    "type": "integer"
+                },
+                "openComment": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "tagList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "res.ArticleDetailData": {
+            "type": "object",
+            "properties": {
+                "abstract": {
+                    "type": "string"
+                },
+                "categoryID": {
+                    "type": "integer"
+                },
+                "categoryTitle": {
+                    "type": "string"
+                },
+                "collectCount": {
+                    "type": "integer"
+                },
+                "commentCount": {
+                    "type": "integer"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "diggCount": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isCollect": {
+                    "type": "boolean"
+                },
+                "isDigg": {
+                    "type": "boolean"
+                },
+                "lookCount": {
+                    "type": "integer"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "openComment": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "tagList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userAvatar": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.ArticleDetailResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.Code"
+                        }
+                    ],
+                    "example": 0
+                },
+                "data": {
+                    "$ref": "#/definitions/res.ArticleDetailData"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "res.ArticleListData": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/res.ArticleListItem"
+                    }
+                }
+            }
+        },
+        "res.ArticleListItem": {
+            "type": "object",
+            "properties": {
+                "abstract": {
+                    "type": "string"
+                },
+                "categoryID": {
+                    "type": "integer"
+                },
+                "categoryTitle": {
+                    "type": "string"
+                },
+                "collectCount": {
+                    "type": "integer"
+                },
+                "commentCount": {
+                    "type": "integer"
+                },
+                "cover": {
+                    "type": "string"
+                },
+                "diggCount": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "lookCount": {
+                    "type": "integer"
+                },
+                "openComment": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "tagList": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "title": {
+                    "type": "string"
+                },
+                "userAvatar": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "integer"
+                },
+                "userNickname": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.ArticleListResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.Code"
+                        }
+                    ],
+                    "example": 0
+                },
+                "data": {
+                    "$ref": "#/definitions/res.ArticleListData"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "res.ArticleResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.Code"
+                        }
+                    ],
+                    "example": 0
+                },
+                "data": {
+                    "$ref": "#/definitions/res.ArticleData"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "res.Code": {
+            "type": "integer",
+            "enum": [
+                0,
+                1001,
+                1002
+            ],
+            "x-enum-comments": {
+                "FailServiceCode": "服务异常",
+                "FailValidCode": "校验失败",
+                "SuccessCode": "成功"
+            },
+            "x-enum-descriptions": [
+                "成功",
+                "校验失败",
+                "服务异常"
+            ],
+            "x-enum-varnames": [
+                "SuccessCode",
+                "FailValidCode",
+                "FailServiceCode"
+            ]
+        },
+        "res.EmailCodeData": {
+            "type": "object",
+            "properties": {
+                "emailID": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.EmailCodeResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.Code"
+                        }
+                    ],
+                    "example": 0
+                },
+                "data": {
+                    "$ref": "#/definitions/res.EmailCodeData"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "res.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.Code"
+                        }
+                    ],
+                    "example": 1001
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "参数校验失败"
+                }
+            }
+        },
+        "res.ImageUploadData": {
+            "type": "object",
+            "properties": {
+                "filename": {
+                    "type": "string"
+                },
+                "hash": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "web_path": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.ImageUploadResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.Code"
+                        }
+                    ],
+                    "example": 0
+                },
+                "data": {
+                    "$ref": "#/definitions/res.ImageUploadData"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "res.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.Code"
+                        }
+                    ],
+                    "example": 0
+                },
+                "data": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "操作成功"
+                }
+            }
+        },
+        "res.QiNiuTokenData": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "region": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "res.QiNiuTokenResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.Code"
+                        }
+                    ],
+                    "example": 0
+                },
+                "data": {
+                    "$ref": "#/definitions/res.QiNiuTokenData"
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "res.TokenResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/res.Code"
+                        }
+                    ],
+                    "example": 0
+                },
+                "data": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIs..."
+                },
+                "msg": {
+                    "type": "string",
+                    "example": "成功"
+                }
+            }
+        },
+        "user_api.PwdLoginSwaggerRequest": {
+            "type": "object",
+            "required": [
+                "password",
+                "val"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "val": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_api.RegisterEmailRequest": {
+            "type": "object",
+            "required": [
+                "emailCode",
+                "emailID",
+                "pwd"
+            ],
+            "properties": {
+                "emailCode": {
+                    "type": "string"
+                },
+                "emailID": {
+                    "type": "string"
+                },
+                "pwd": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_api.ResetPasswordSwaggerRequest": {
+            "type": "object",
+            "required": [
+                "emailCode",
+                "emailID",
+                "pwd"
+            ],
+            "properties": {
+                "emailCode": {
+                    "type": "string"
+                },
+                "emailID": {
+                    "type": "string"
+                },
+                "pwd": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_api.SendEmailRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_api.UpdatePasswordRequest": {
+            "type": "object",
+            "required": [
+                "oldPwd",
+                "pwd"
+            ],
+            "properties": {
+                "oldPwd": {
+                    "type": "string"
+                },
+                "pwd": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "输入 Bearer {JWT}，例如：Bearer eyJhbGciOiJIUzI1NiIs...",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

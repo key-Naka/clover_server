@@ -22,6 +22,17 @@ type RegisterEmailRequest struct {
 	Pwd       string `json:"pwd" binding:"required"`
 }
 
+// RegisterEmailView 通过已验证的邮箱验证码注册账户。
+// @Summary 邮箱注册
+// @Description `emailID` 和 `emailCode` 必须由发送邮件验证码流程获得；路由实际由邮箱验证码中间件校验后才执行。
+// @Tags 用户
+// @Accept json
+// @Produce json
+// @Param request body RegisterEmailRequest true "邮箱注册信息"
+// @Success 200 {object} res.TokenResponse "注册成功，data 为 JWT"
+// @Failure 400 {object} res.ErrorResponse "参数校验、验证码或注册失败"
+// @Failure 500 {object} res.ErrorResponse "服务异常"
+// @Router /user/email [post]
 func (UserApi) RegisterEmailView(c *gin.Context) {
 	var cr RegisterEmailRequest
 	err := c.ShouldBindJSON(&cr)

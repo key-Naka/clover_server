@@ -20,6 +20,16 @@ type ArticleDetailResponse struct {
 	IsCollect     bool   `json:"isCollect"`
 }
 
+// ArticleDetailView 获取文章详情。
+// @Summary 获取文章详情
+// @Description 未登录用户只能读取已发布文章；携带 Bearer JWT 时可读取本人文章，管理员可读取任意文章。
+// @Tags 文章
+// @Produce json
+// @Param id query int true "文章 ID"
+// @Success 200 {object} res.ArticleDetailResponse "文章详情"
+// @Failure 400 {object} res.ErrorResponse "参数或文章可见性校验失败"
+// @Failure 500 {object} res.ErrorResponse "服务异常"
+// @Router /article/detail [get]
 func (ArticleApi) ArticleDetailView(c *gin.Context) {
 	var req models.IDRequest
 	if err := c.ShouldBindQuery(&req); err != nil {

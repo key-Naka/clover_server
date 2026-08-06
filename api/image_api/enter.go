@@ -46,6 +46,17 @@ func (ImageApi) ImageListView(c *gin.Context) {
 	res.OkWithList(listResponse, count, c)
 }
 
+// ImageRemoveView 批量删除图片。
+// @Summary 删除图片
+// @Tags 图片
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body models.RemoveRequest true "待删除的图片 ID 列表"
+// @Success 200 {object} res.MessageResponse "图片删除成功"
+// @Failure 400 {object} res.ErrorResponse "参数、认证或图片存在性校验失败"
+// @Failure 500 {object} res.ErrorResponse "删除失败"
+// @Router /images [delete]
 func (ImageApi) ImageRemoveView(c *gin.Context) {
 	var req models.RemoveRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

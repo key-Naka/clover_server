@@ -18,6 +18,25 @@ type PwdLoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
+// PwdLoginSwaggerRequest 是密码登录的 Swagger 请求模型，包含验证码中间件读取的字段。
+type PwdLoginSwaggerRequest struct {
+	Val      string `json:"val" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	ID       string `json:"id"`
+	Code     string `json:"code"`
+}
+
+// PwdLoginApi 使用用户名或邮箱和密码登录。
+// @Summary 密码登录
+// @Description 公开接口。`val` 为用户名或邮箱，`password` 为账户密码；启用图形验证码时，验证码中间件额外校验 `id`（验证码 ID）和 `code`（验证码文本）。
+// @Tags 用户
+// @Accept json
+// @Produce json
+// @Param request body PwdLoginSwaggerRequest true "用户名或邮箱、密码及可选图形验证码"
+// @Success 200 {object} res.TokenResponse "登录成功，data 为 JWT"
+// @Failure 400 {object} res.ErrorResponse "参数校验、图形验证码或账号密码错误"
+// @Failure 500 {object} res.ErrorResponse "服务异常"
+// @Router /user/login [post]
 func (UserApi) PwdLoginApi(c *gin.Context) {
 	var cr PwdLoginRequest
 	err := c.ShouldBindJSON(&cr)

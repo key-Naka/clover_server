@@ -14,6 +14,15 @@ type QiNiuGenTokenResponse struct {
 	Region string `json:"region"`
 }
 
+// QiNiuGenToken 获取七牛云直传凭证。
+// @Summary 获取七牛云上传凭证
+// @Tags 图片
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} res.QiNiuTokenResponse "七牛 bucket、上传 token 与区域"
+// @Failure 400 {object} res.ErrorResponse "七牛云未启用"
+// @Failure 500 {object} res.ErrorResponse "生成上传凭证失败"
+// @Router /images/qiniu [post]
 func (i ImageApi) QiNiuGenToken(c *gin.Context) {
 	glo := global.Config.QiNiu
 	if !glo.Enable {

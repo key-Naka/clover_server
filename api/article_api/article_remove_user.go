@@ -10,6 +10,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ArticleRemoveUserView 删除当前用户自己的文章。
+// @Summary 删除文章
+// @Tags 文章
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body models.IDRequest true "文章 ID"
+// @Success 200 {object} res.MessageResponse "文章删除成功"
+// @Failure 400 {object} res.ErrorResponse "参数、归属或认证失败"
+// @Failure 500 {object} res.ErrorResponse "服务异常"
+// @Router /article [delete]
 func (ArticleApi) ArticleRemoveUserView(c *gin.Context) {
 	var req models.IDRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

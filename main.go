@@ -9,6 +9,15 @@ import (
 	"log/slog"
 )
 
+// @title Clover Server API
+// @version 1.0
+// @description Clover Server 的 REST API 文档。
+// @BasePath /api
+// @schemes https http
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description 输入 Bearer {JWT}，例如：Bearer eyJhbGciOiJIUzI1NiIs...
 func main() {
 	flags.ParseFlags()
 

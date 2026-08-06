@@ -21,6 +21,18 @@ type ArticleCreateRequest struct {
 	Status      int8     `json:"status" binding:"required,oneof=1 2 3 4"`
 }
 
+// ArticleCreateView 创建文章。
+// @Summary 创建文章
+// @Description `title`、`content`、`status` 必填。status：1 草稿、2 审核中、3 已发布、4 已拒绝。
+// @Tags 文章
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body ArticleCreateRequest true "文章内容"
+// @Success 200 {object} res.ArticleResponse "创建后的完整文章"
+// @Failure 400 {object} res.ErrorResponse "参数、分类或认证失败"
+// @Failure 500 {object} res.ErrorResponse "服务异常"
+// @Router /article [post]
 func (ArticleApi) ArticleCreateView(c *gin.Context) {
 	var req ArticleCreateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

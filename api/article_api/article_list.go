@@ -26,6 +26,23 @@ type ArticleListResponse struct {
 	UserAvatar    string `json:"userAvatar"`
 }
 
+// ArticleListView 获取文章列表。
+// @Summary 获取文章列表
+// @Description `type=1` 为指定用户已发布文章，必须提供 `userID`；`type=2` 为当前登录用户文章，需 Bearer JWT；`type=3` 为管理员视图，需管理员 Bearer JWT。`status` 用于状态筛选。
+// @Tags 文章
+// @Produce json
+// @Param page query int false "页码，默认 1"
+// @Param limit query int false "每页数量，默认 10，最大 100"
+// @Param key query string false "标题或摘要关键字"
+// @Param order query string false "排序字段，默认 id desc"
+// @Param type query int true "列表类型：1 用户公开文章；2 我的文章；3 管理员文章"
+// @Param userID query int false "用户 ID；type=1 时必填，type=3 时可选"
+// @Param categoryID query int false "分类 ID"
+// @Param status query int false "文章状态"
+// @Success 200 {object} res.ArticleListResponse "data 包含 list 与 count"
+// @Failure 400 {object} res.ErrorResponse "参数或权限校验失败"
+// @Failure 500 {object} res.ErrorResponse "服务异常"
+// @Router /article/list [get]
 func (ArticleApi) ArticleListView(c *gin.Context) {
 	var req ArticleListRequest
 	if err := c.ShouldBindQuery(&req); err != nil {

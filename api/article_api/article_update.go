@@ -22,6 +22,18 @@ type ArticleUpdateRequest struct {
 	Status      int8     `json:"status" binding:"required,oneof=1 2 3 4"`
 }
 
+// ArticleUpdateView 更新当前用户自己的文章。
+// @Summary 更新文章
+// @Description `id`、`title`、`content`、`status` 必填。status：1 草稿、2 审核中、3 已发布、4 已拒绝。
+// @Tags 文章
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body ArticleUpdateRequest true "更新后的文章内容"
+// @Success 200 {object} res.MessageResponse "文章更新成功"
+// @Failure 400 {object} res.ErrorResponse "参数、归属、分类或认证失败"
+// @Failure 500 {object} res.ErrorResponse "服务异常"
+// @Router /article [put]
 func (ArticleApi) ArticleUpdateView(c *gin.Context) {
 	var req ArticleUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
